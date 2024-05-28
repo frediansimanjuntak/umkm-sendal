@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,5 +21,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        Blade::component('layouts.client', 'client-layout');
     }
 }
