@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductImageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,8 +21,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('product-categories', ProductCategoryController::class);
     Route::resource('header-images', ProductCategoryController::class);
-    Route::resource('products', ProductCategoryController::class);
-    Route::resource('product-images', ProductCategoryController::class);
+    Route::resource('products', ProductController::class);
+    Route::resource('product.product-images', ProductImageController::class);
 });
 
 require __DIR__.'/auth.php';

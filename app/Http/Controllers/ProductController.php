@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -13,7 +15,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::all();
+        return view('products.index', compact('products'));
     }
 
     /**
@@ -21,7 +24,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $productCategories = ProductCategory::all();
+        return view('products.create', compact('productCategories'));
     }
 
     /**
@@ -29,7 +33,15 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $product = Product::create($request->all());
+            DB::commit();
+            return redirect()->route('products.index')->withSuccess('Create Product Success');
+        } catch (\Exception $exp) {
+            DB::rollback();
+            return redirect()->back()->withErrors($exp->getMessage())->withInput();
+        }
     }
 
     /**
@@ -45,7 +57,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        $productCategories = ProductCategory::all();
+        return view('products.edit', compact('product', 'productCategories'));
     }
 
     /**
@@ -53,7 +66,16 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $product->update($request->all());
+            DB::commit();
+
+            return redirect()->route('products.index')->withSuccess('Update Product Success');
+        } catch (\Exception $exp) {
+            DB::rollback();
+            return redirect()->back()->withErrors($exp->getMessage())->withInput();
+        }
     }
 
     /**
@@ -61,6 +83,15 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $product->delete();
+            DB::commit();
+
+            return redirect()->route('products.index')->withSuccess('Delete Product Success');
+        } catch (\Exception $exp) {
+            DB::rollback();
+            return redirect()->route('products.index')->withError($exp->getMessage());
+        }
     }
 }
